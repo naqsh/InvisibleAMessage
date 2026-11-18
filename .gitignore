@@ -1,0 +1,9 @@
+# Local configuration and secrets
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+!appsettings.*.example.json
+# .NET build and IDE output
+bin/
+obj/
+.vs/
