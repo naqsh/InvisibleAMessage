@@ -16,6 +16,9 @@ Only 16-bit PCM and 32-bit floating-point playback formats are currently support
 
 Capture and transcribe meeting audio only when authorized and in accordance with applicable consent requirements. Loopback captures audio played through the selected device, which may include sounds outside the meeting.
 
+## Open in Visual Studio
+
+Install Visual Studio 2026 (version 18.0 or later) with the **.NET desktop development** workload, then open `MeetingCopilot.sln`. In Solution Explorer, right-click `MeetingCopilot.Desktop` and select **Set as Startup Project**. Build the solution, configure the Deepgram key as described below, and press F5 to start the app. Local execution can still be blocked by Windows application-control policy; see the Phase 1 notes.
 ## Build and run
 
 From the repository root in PowerShell:
@@ -58,3 +61,4 @@ On the development machine, Windows Application Control blocked the test assembl
 - `docs/` — architecture, plan, and project guidance.
 
 See [Agent.md](Agent.md) for the product brief and planned phases. The initial implementation targets Windows; macOS support would require alternatives to WPF and WASAPI.
+
