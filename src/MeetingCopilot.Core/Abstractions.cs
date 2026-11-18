@@ -4,5 +4,5 @@ public interface IStreamingSession : IAsyncDisposable
 {
     event Action<string, bool>? Transcript;
     event Action<string>? Failed;
-    Task StartAsync(string deviceId, string apiKey);
+    Task StartAsync(string deviceId, string apiKey, CancellationToken cancellationToken = default);
 }

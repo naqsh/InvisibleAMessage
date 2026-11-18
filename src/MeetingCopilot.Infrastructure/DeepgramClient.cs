@@ -14,10 +14,11 @@ internal sealed class DeepgramClient : IAsyncDisposable
     private Task? sender, receiver;
     public event Action<string, bool>? Transcript;
     public event Action<string>? Failed;
-    public async Task ConnectAsync(string key, string encoding, int rate, int channels)
+    public async Task ConnectAsync(string key, string encoding, int rate, int channels, CancellationToken cancellationToken)
     {
         socket.Options.SetRequestHeader("Authorization", "Token " + key);
-        await socket.ConnectAsync(new Uri($"wss://api.deepgram.com/v1/listen?model=nova-3&encoding={encoding}&sample_rate={rate}&channels={channels}&interim_results=true&endpointing=300"), stop.Token);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(stop.Token, cancellationToken);
+        await socket.ConnectAsync(new Uri($"wss://api.deepgram.com/v1/listen?model=nova-3&encoding={encoding}&sample_rate={rate}&channels={channels}&interim_results=true&endpointing=300"), linked.Token);
         sender = SendAsync(); receiver = ReceiveAsync();
     }
     public void Submit(ReadOnlySpan<byte> bytes) { if (!bytes.IsEmpty) audio.Writer.TryWrite(bytes.ToArray()); }

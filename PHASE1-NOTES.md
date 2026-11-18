@@ -1,17 +1,20 @@
-# Phase 1 development snapshot
+# Phase 1 validation
 
-The prototype provides a WPF shell, playback device selection, WASAPI loopback capture, bounded audio buffering, a Deepgram WebSocket client, and partial/final transcript display. The audio session and provider are separate infrastructure classes; additional dependency injection, recovery and resilience work is still needed. This is not yet a fully validated Phase 1.
+The application builds with .NET SDK 10.0.301: `dotnet build src/MeetingCopilot.Desktop/MeetingCopilot.Desktop.csproj` succeeded with no warnings or errors on 18 November 2026. Restore completed for all three application projects.
 
-## Run
+`dotnet test tests/MeetingCopilot.Tests/MeetingCopilot.Tests.csproj` restored and built the test project, but Windows Application Control blocked the test assembly from loading (0x800711C7). No tests ran. The policy must be resolved by the computer's administrator; do not disable or bypass it as a workaround.
 
-1. Run `dotnet build src/MeetingCopilot.Desktop/MeetingCopilot.Desktop.csproj`.
-2. In `src/MeetingCopilot.Desktop/bin/Debug/net10.0-windows/`, copy `appsettings.example.json` to `appsettings.json` and enter your Deepgram key locally. Never share the file.
-3. Start the built application, select the playback device used for authorized meeting audio, and select Start listening. Select Stop when finished.
+## Manual checks still required
 
-## Validation
+1. Set up `appsettings.json` as described in README.md. Put the Deepgram API key only in this local file.
+2. Start the application and confirm that connected playback devices appear. Choose the device used by the authorized audio source.
+3. Play authorized speech and select Start listening. Confirm that the connection succeeds and interim and final text appear. Stop playback briefly and confirm listening resumes when speech returns.
+4. Select Stop while listening and while connecting. Confirm the application remains responsive and can start a fresh session. Close the window while connecting and while listening.
+5. With permission to test the device, disconnect the selected output device while listening. Confirm the application reports an error and capture stops; reconnect it and restart the app to refresh the device list.
+6. Temporarily use an invalid key and then restore the correct local value. Confirm an actionable authentication error appears. Disconnect and restore the network during a session and confirm the application stops and offers a manual retry.
 
-- Application build: passed with zero warnings and errors.
-- `dotnet test tests/MeetingCopilot.Tests/MeetingCopilot.Tests.csproj`: test project compiled, but Windows Application Control blocked loading the test assembly (0x800711C7); tests did not execute.
-- Device enumeration, live capture, Deepgram authentication, transcript updates, device disconnect and shutdown: not yet manually validated.
-- Only 16-bit PCM and 32-bit float playback formats are supported; format conversion and reconnection are not implemented.
-- Primary and alternate LLM settings are placeholders; no LLM integration exists in Phase 1.
+These checks have not been executed. No live Deepgram key or authorized meeting audio was available during development. Do not report Phase 1 as validated until they and the automated tests pass.
+
+## Known limitations
+
+Only 16-bit PCM and 32-bit floating-point playback formats are accepted. Audio conversion, automatic connection recovery, device list refresh, dependency injection, and full MVVM separation are not implemented. The bounded buffer drops oldest frames under overload. LLM settings are placeholders and are not used in Phase 1.
